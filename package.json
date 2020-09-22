@@ -1,0 +1,16 @@
+{
+  "name": "koli_rush",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "phaser": "^3.24.1",
+    "phaser3-plugin-isometric": "0.0.7"
+  }
+}
