@@ -13,65 +13,112 @@
     </style>
 </head>
 <body>
-<script type="text/javascript">
+    <script type="text/javascript">
 
-var socket = io();
-var config = {
-        type: Phaser.AUTO,
-        width: 1028,
-        height: 800,
-        scene: {
-            preload: preload,
-            create: create,
-            update: update
-        }
-    };
+class Main extends Phaser.Scene {
+    socket
 
-    
-    var game = new Phaser.Game(config);
-    
-    function preload () {
+    preload () {
         this.load.image('tile', '/assets/iso_2.png');
+        this.load.image('cra', '/assets/cra.png');
+    }
+
+    create () {
+        this.socket = io();
+        
+        this.socket.on('stateChanged', (state) => {
+            this.build(state);
+        })
+
+        this.cameras.main.setBackgroundColor('#000000')
+    }
+
+    move (x, y) {
+        this.socket.emit('move', 0, x, y)
     }
     
-    function create (map) {
-        var tilewidth = 100;
-        var tileheight = 100;
-        
-        tileWidthHalf = tilewidth / 2;
-        tileHeightHalf = tileheight / 2;
-        
-        
-        var mapwidth = 11;
-        var mapheight = 28;
-        
-        var centerX = 40;
-        var centerY = 100;
-        
-        for (var y = 0; y < mapheight; y += 1)
+    build (state) {
+        let map = state.map.map
+        let lstPerso = state.characters
+
+        //taille de mes blocs
+        let tilewidth = 94;
+        let tileheight = 100;
+        let tileWidthHalf = tilewidth / 2;
+        let tileHeightHalf = tileheight / 2;
+        //position dans la fenetre
+        let centerX = 40;
+        let centerY = 100;
+        console.log(map)
+        console.log(lstPerso)
+        for (const y in map)
         {
-            for (var x = 0; x < mapwidth; x += 1)
+            for (const x in map[y])
             {
-                var tx = x * (tilewidth * 0.9) + tilewidth * 0.45 * (y % 2);
-                var ty = y * tileHeightHalf * 0.45;
-                var tile = this.add.image(centerX + tx, centerY + ty, 'tile').setScale(2);
-                if (y % 2 == 0)
-				tile.tint = 0xE5E3E3;
+                let bob = map[y][x]
+                let tx = x * (tilewidth) + tilewidth * 0.5 * (y % 2);
+                let ty = y * tileHeightHalf * 0.5;
+                // let tx = x * (tilewidth * 0.9) + tilewidth * 0.45 * (y % 2);
+                // let ty = y * tileHeightHalf * 0.45;
+                let tile = this.add.image(centerX + tx, centerY + ty, 'tile')
+                tile.setInteractive()
+                tile.on('pointerdown', () => {
+                    this.move(x, y)
+                })
+                let color
+                switch (bob.state)
+                {
+                    case 'empty':
+                        if (y % 2 == 0)
+                            color = tile.tint = 0xE5E3E3;
+                        else
+                            color = tile.tint
+                        break;
+                    case 'hole':
+                        color = tile.tint = 0x000000;
+                        break;
+                    case 'bloc':
+                        break;
+                }
+                tile.on('pointerover', () => {
+                    if (bob.state != 'hole')
+                        tile.tint = 0x359E28;
+                })
+                tile.on('pointerout', () => {
+                    tile.tint = color;
+                })
             }
         }
+        for (const i in lstPerso)
+        {
+            let x = lstPerso[i].posX
+            let y = lstPerso[i].posY
+
+            let perso = this.add.image(centerX + x * 94 + (y % 2 == 1 ? 94/2 : 0), centerX + y * 50/2, 'cra').setScale(0.35);
+        }
     }
     
-    function update ()
+    update ()
     {
         
     }
-    socket.on('mapChanged', function(map) {
-         console.log('nouvel map!', map)
-     })
-
     
-</script>
+    constructor() {
+        super('Main')
+    }
+}
 
+let config = {
+    type: Phaser.AUTO,
+    width: 1028,
+    height: 800,
+    scene: Main,
+    backgroundColor: '#FFFFFF'
+};
+
+let game = new Phaser.Game(config);
+
+</script>
 
 </body>
 </html>
