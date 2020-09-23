@@ -8,6 +8,10 @@ class Character {
 	}
 
 	data() {
-		return `$(this.name) | $(this.hp) hp | $(this.pa) pa | $(this.pm) pm`;
+		return `${this.name} | ${this.hp} hp | ${this.pa} pa | ${this.pm} pm`;
 	}
+}
+
+module.exports = {
+	Character
 }
