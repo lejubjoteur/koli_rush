@@ -21,6 +21,7 @@ class Main extends Phaser.Scene {
     preload () {
         this.load.image('tile', '/assets/iso_2.png');
         this.load.image('cra', '/assets/cra.png');
+        this.load.image('background', '/assets/background.png');
     }
 
     create () {
@@ -29,8 +30,6 @@ class Main extends Phaser.Scene {
         this.socket.on('stateChanged', (state) => {
             this.build(state);
         })
-
-        this.cameras.main.setBackgroundColor('#000000')
     }
 
     move (x, y) {
@@ -49,18 +48,22 @@ class Main extends Phaser.Scene {
         //position dans la fenetre
         let centerX = 40;
         let centerY = 100;
-        console.log(map)
-        console.log(lstPerso)
+        this.add.sprite(0, 0, 'background')
         for (const y in map)
         {
             for (const x in map[y])
             {
                 let bob = map[y][x]
-                let tx = x * (tilewidth) + tilewidth * 0.5 * (y % 2);
-                let ty = y * tileHeightHalf * 0.5;
+                // let tx = x * (tilewidth) + tilewidth * 0.5 ;
+                // let ty = y * tileHeightHalf * 0.5;
+                let tx = (x - y) * tileWidthHalf;
+                let ty = (x + y) * tileHeightHalf;
                 // let tx = x * (tilewidth * 0.9) + tilewidth * 0.45 * (y % 2);
                 // let ty = y * tileHeightHalf * 0.45;
+                if (bob.state == 'void')
+                    continue;
                 let tile = this.add.image(centerX + tx, centerY + ty, 'tile')
+                var text1 = this.add.text((centerX - 5) + tx, (centerY/ 1.8) + ty, `${x},${y}`);
                 tile.setInteractive()
                 tile.on('pointerdown', () => {
                     this.move(x, y)
@@ -77,7 +80,7 @@ class Main extends Phaser.Scene {
                     case 'hole':
                         color = tile.tint = 0x000000;
                         break;
-                    case 'bloc':
+                    case 'void':
                         break;
                 }
                 tile.on('pointerover', () => {

@@ -16,8 +16,21 @@ class Character {
 	}
 
 	move(x, y) {
-		this.posX = x
-		this.posY = y
+		if (/*this.pm > 0 &&*/ 
+			(this.posX != x || this.posY != y)
+				&& (
+						((this.posY - y == 1 || y - this.posY == 1) && this.posX - x == 0)
+							|| (this.posY - y == 1 && x - this.posX == 1) 
+							|| (this.posX - x == 1 && y - this.posY == 1)
+							|| (x - this.posX == 1 && y - this.posY == 1)
+							|| (this.posX - x == 1 && this.posY - y == 1)
+					)
+		)
+		{
+			this.posX = x
+			this.posY = y
+			// this.pm--
+		}
 	}
 
 	data() {

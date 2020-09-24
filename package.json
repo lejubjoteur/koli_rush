@@ -1,7 +1,6 @@
 {
   "name": "koli_rush",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "dependencies": {
     "express": "^4.17.1",
@@ -24,5 +23,7 @@
   "bugs": {
     "url": "https://github.com/lejubjoteur/koli_rush/issues"
   },
-  "homepage": "https://github.com/lejubjoteur/koli_rush#readme"
+  "homepage": "https://github.com/lejubjoteur/koli_rush#readme",
+  "keywords": [],
+  "description": ""
 }

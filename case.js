@@ -17,18 +17,20 @@ class Map {
 
 	}
 
-	constructor(height, width) {
-		this.height = height;
-		this.width = width;
-		for (let i = 0; i < height; i++)
+	constructor(map) {
+		// this.height = height;
+		// this.width = width;
+		this.height = map.length
+		this.width = map[0].length
+		for (let i = 0; i < this.height; i++)
 		{
 			this.map[i] = []
-			for (let j = 0; j < width; j++)
+			for (let j = 0; j < this.width; j++)
 			{
-				if (i == 3 && j == 3)
+				if (map[i][j] == 0)
 					this.map[i][j] = new Case(i + j, "hole")
-				else if (i == 7 && j == 2)
-					this.map[i][j] = new Case(i + j, "hole")
+				else if (map[i][j] == -1)
+					this.map[i][j] = new Case(i + j, "void")
 				else
 					this.map[i][j] = new Case(i + j, "empty")
 			}
