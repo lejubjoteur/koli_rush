@@ -5,15 +5,13 @@ const io = require('socket.io')(server)
 const { Game } = require('./game')
 const { Character } = require('./character')
 const { Map } = require('./case')
-const map = [[-1,-1,-1,1,1,-1,-1,-1,-1],
-			 [-1,1,1,1,1,1,1,1,-1],
-			 [-1,1,1,1,1,1,1,1,-1],
-			 [-1,1,1,1,1,-1,1,1,-1],
-			 [-1,1,1,0,1,1,1,1,-1],
-			 [-1,1,1,1,1,1,1,1,-1],
-			 [-1,1,1,1,1,0,1,1,-1],
-			 [-1,1,1,1,1,1,1,1,-1],
-			 [-1,-1,-1,1,1,-1,-1,-1,-1]]
+const map = [
+			[1,1,1,1,1],
+			[1,1,1,1,1],
+			[1,1,1,1,1],
+			[1,1,1,1,1],
+			[1,1,1,1,1]
+		]
 
 app.use(express.static('public'))
 io.on('connection', (socket) => {

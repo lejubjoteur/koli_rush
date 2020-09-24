@@ -44,7 +44,7 @@ class Main extends Phaser.Scene {
         let tilewidth = 94;
         let tileheight = 100;
         let tileWidthHalf = tilewidth / 2;
-        let tileHeightHalf = tileheight / 2;
+        let tileHeightQuarter = tileheight / 4;
         //position dans la fenetre
         let centerX = 40;
         let centerY = 100;
@@ -54,16 +54,12 @@ class Main extends Phaser.Scene {
             for (const x in map[y])
             {
                 let bob = map[y][x]
-                // let tx = x * (tilewidth) + tilewidth * 0.5 ;
-                // let ty = y * tileHeightHalf * 0.5;
-                let tx = (x - y) * tileWidthHalf;
-                let ty = (x + y) * tileHeightHalf;
-                // let tx = x * (tilewidth * 0.9) + tilewidth * 0.45 * (y % 2);
-                // let ty = y * tileHeightHalf * 0.45;
+                let tx = (state.map.width * tileWidthHalf) + (x - y) * tileWidthHalf
+                let ty = y * tileHeightQuarter + x * tileHeightQuarter
                 if (bob.state == 'void')
                     continue;
-                let tile = this.add.image(centerX + tx, centerY + ty, 'tile')
-                var text1 = this.add.text((centerX - 5) + tx, (centerY/ 1.8) + ty, `${x},${y}`);
+                let tile = this.add.image(tx + centerX, ty + centerY, 'tile')
+                var text1 = this.add.text((centerX * 2 - 5) + tx, (centerY/ 1.8) + ty, `${x},${y}`);
                 tile.setInteractive()
                 tile.on('pointerdown', () => {
                     this.move(x, y)
@@ -97,7 +93,7 @@ class Main extends Phaser.Scene {
             let x = lstPerso[i].posX
             let y = lstPerso[i].posY
 
-            let perso = this.add.image(centerX + x * 94 + (y % 2 == 1 ? 94/2 : 0), centerX + y * 50/2, 'cra').setScale(0.35);
+            let perso = this.add.image(, 'cra').setScale(0.35);
         }
     }
     
