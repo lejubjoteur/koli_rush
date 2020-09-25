@@ -6,11 +6,18 @@ const { Game } = require('./game')
 const { Character } = require('./character')
 const { Map } = require('./case')
 const map = [
-			[1,1,1,1,1],
-			[1,1,1,1,1],
-			[1,1,1,1,1],
-			[1,1,1,1,1],
-			[1,1,1,1,1]
+			[-1,-1,-1,-1,-1,1,1,-1,-1,-1,-1,-1],
+			[-1,-1,-1,-1,1,1,1,1,-1,-1,-1,-1],
+			[-1,-1,-1,1,1,1,1,1,1,-1,-1,-1],
+			[-1,-1,1,1,1,1,1,1,0,1,-1,-1],
+			[-1,1,1,1,1,1,1,1,1,1,1,-1],
+			[1,1,1,0,1,1,1,1,1,1,1,1],
+			[1,1,1,1,1,1,1,1,1,1,1,1],
+			[-1,1,1,1,1,1,1,1,1,1,1,-1],
+			[-1,-1,1,0,1,1,1,0,1,1,-1,-1],
+			[-1,-1,-1,1,1,1,1,1,1,-1,-1,-1],
+			[-1,-1,-1,-1,1,1,1,1,-1,-1,-1,-1],
+			[-1,-1,-1,-1,-1,1,1,-1,-1,-1,-1,-1]
 		]
 
 app.use(express.static('public'))
@@ -22,13 +29,13 @@ io.on('connection', (socket) => {
 function newJoin (socket) {
 	const game = new Game()
 	const board = new Map(map)
-	const cra = new Character("Cra", 3000, 6, 3, 2, 4)
+	const cra = new Character("Cra", 3000, 6, 3, 5, 5)
 	game.characters.push(cra)
 	game.map = board
 	socket.emit('stateChanged', game)
 	socket.on('move', function (index, x, y) {
 		console.log('move', index, x , y)
-		if (game.map.map[y][x].state != 'hole')
+		if (game.map.map[y,x].state != 'hole')
 			game.characters[index].move(x, y)
 		socket.emit('stateChanged', game)
 	})

@@ -16,12 +16,8 @@ class Character {
 	}
 
 	move(x, y) {
-		// if ()
-		// {
-			this.posX = x
-			this.posY = y
-			// this.pm--
-		// }
+		this.posX = x
+		this.posY = y
 	}
 
 	data() {

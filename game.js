@@ -4,6 +4,12 @@ class Game {
 	characters = []
 	players = []
 
+	pathfinding(character, x, y)
+	{
+		
+
+	}
+
 	constructor() {
 
 	}
