@@ -31,6 +31,23 @@ class Main extends Phaser.Scene {
         this.socket.on('stateChanged', (state) => {
             this.build(state);
         })
+
+        this.socket.on('drawPath', (goodPath) => {
+            this.originalColor()
+            this.drawPath(goodPath)
+        })
+    }
+
+    originalColor() {
+        for (let row of this.tiles)
+            for(let tile of row)
+                if (tile != undefined)
+                    tile.tint = tile.originalColor
+    }
+
+    drawPath(goodPath) {
+        for (let cube of goodPath)
+            this.tiles[cube.y][cube.x].tint = 0x359E28;
     }
 
     move (x, y) {
@@ -41,7 +58,7 @@ class Main extends Phaser.Scene {
         this.imageGroup.clear(true)
         let map = state.map.map
         var lstPerso = state.characters
-        let tiles = []
+        this.tiles = []
 
         //taille des blocs
         let tilewidth = 94;
@@ -54,7 +71,7 @@ class Main extends Phaser.Scene {
         // this.add.sprite(0, 0, 'background')
         for (const y in map)
         {
-            tiles[y] = []
+            this.tiles[y] = []
             for (const x in map[y])
             {
                 let bob = map[y][x]
@@ -64,19 +81,18 @@ class Main extends Phaser.Scene {
                     continue;
                 let tile = this.add.image(tx + windowX, ty + windowY, 'tile')
                 this.imageGroup.add(tile)
-                tiles[y][x] = tile
+                this.tiles[y][x] = tile
                 // var text1 = this.add.text(-140 + tx, 15 + ty, `${x},${y}`);
-                let color
                 switch (bob.state)
                 {
                     case 'empty':
                         if (y % 2 == 0)
-                        color = tile.tint = 0xE5E3E3;
+                        tile.originalColor = tile.tint = 0xE5E3E3;
                         else
-                        color = tile.tint
+                        tile.originalColor = tile.tint
                         break;
                         case 'hole':
-                            color = tile.tint = 0x000000;
+                        tile.originalColor = tile.tint = 0x000000;
                             break;
                             case 'void':
                                 break;
@@ -84,14 +100,17 @@ class Main extends Phaser.Scene {
                 tile.setInteractive()
                 tile.on('pointerover', () => {
                     if (bob.state != 'hole')
+                    {
+                        this.socket.emit('findPath', 0, x, y)
                         tile.tint = 0x359E28;
+                    }
                 })
                 tile.on('pointerout', () => {
-                    tile.tint = color;
+                    tile.tint =  tile.originalColor;
                 })
                 tile.on('pointerdown', () => {
-                    this.move(x, y)
-                    console.log(lstPerso[0])
+                    if (bob.state != 'hole')
+                        this.move(x, y)
                 })
             }
         }
@@ -101,7 +120,7 @@ class Main extends Phaser.Scene {
         {
             let x = lstPerso[i].posX
             let y = lstPerso[i].posY
-            let perso = this.add.image(tiles[y][x].x, tiles[y][x].y - tileheight / 2 - 10, 'cra').setScale(0.35);
+            let perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 - 10, 'cra').setScale(0.35);
             this.imageGroup.add(perso)
         }
     }

@@ -35,8 +35,20 @@ function newJoin (socket) {
 	socket.emit('stateChanged', game)
 	socket.on('move', function (index, x, y) {
 		console.log('move', index, x , y)
-		if (game.map.map[y,x].state != 'hole')
-			game.characters[index].move(x, y)
-		socket.emit('stateChanged', game)
+		let goodPath = game.pathfinding(game.map.map[game.characters[index].posY][game.characters[index].posX], game.map.map[y][x])
+		let inter = setInterval(() => {
+			let chemin = goodPath.pop()
+			if (chemin == undefined)
+			{
+				clearInterval(inter)
+				return
+			}
+			game.characters[index].move(chemin.x, chemin.y)
+			socket.emit('stateChanged', game)
+		}, 200)
+	})
+	socket.on('findPath', (index, x, y) => {
+		let goodPath = game.pathfinding(game.map.map[game.characters[index].posY][game.characters[index].posX], game.map.map[y][x])
+		socket.emit('drawPath', goodPath)
 	})
 }
