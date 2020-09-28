@@ -30,10 +30,10 @@ class Map {
 			this.map[i] = []
 			for (let j = 0; j < this.width; j++)
 			{
-				if (map[i][j] == 0)
+				if (map[i][j] == -1)
+					this.map[i][j] = new Case(k, "void", i, j)
+				else if (map[i][j] == 0)
 					this.map[i][j] = new Case(k, "hole", j, i)
-				else if (map[i][j] == -1)
-					this.map[i][j] = new Case(k, "void", j, i)
 				else
 					this.map[i][j] = new Case(k, "empty", j, i)
 				k++

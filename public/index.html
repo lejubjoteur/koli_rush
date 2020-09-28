@@ -22,7 +22,7 @@ class Main extends Phaser.Scene {
         this.imageGroup = this.add.group();
         this.load.image('tile', '/assets/iso_2.png');
         this.load.image('cra', '/assets/cra.png');
-        // this.load.image('background', '/assets/background.png');
+        this.load.image('bouftou', '/assets/bouftou.png');
     }
 
     create () {
@@ -36,6 +36,11 @@ class Main extends Phaser.Scene {
             this.originalColor()
             this.drawPath(goodPath)
         })
+
+        this.socket.on('drawPmRange', (pmRange) => {
+            this.originalColor()
+            this.drawPmRange(pmRange)
+        })
     }
 
     originalColor() {
@@ -48,6 +53,11 @@ class Main extends Phaser.Scene {
     drawPath(goodPath) {
         for (let cube of goodPath)
             this.tiles[cube.y][cube.x].tint = 0x359E28;
+    }
+
+    drawPmRange(pmRange) {
+        for (let cube of pmRange)
+            this.tiles[cube.y][cube.x].tint = 0x9EFC89;
     }
 
     move (x, y) {
@@ -100,10 +110,7 @@ class Main extends Phaser.Scene {
                 tile.setInteractive()
                 tile.on('pointerover', () => {
                     if (bob.state != 'hole')
-                    {
                         this.socket.emit('findPath', 0, x, y)
-                        tile.tint = 0x359E28;
-                    }
                 })
                 tile.on('pointerout', () => {
                     tile.tint =  tile.originalColor;
@@ -120,7 +127,17 @@ class Main extends Phaser.Scene {
         {
             let x = lstPerso[i].posX
             let y = lstPerso[i].posY
-            let perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 - 10, 'cra').setScale(0.35);
+            console.log(lstPerso[i].name)
+            let perso
+            switch (lstPerso[i].name)
+            {
+                case 'Cra':
+                    perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 - 10, 'cra').setScale(0.35);
+                    break
+                case 'Bouftou':
+                    perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 + 5, 'bouftou').setScale(0.35);
+                    break
+            }
             this.imageGroup.add(perso)
         }
     }

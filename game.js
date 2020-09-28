@@ -83,6 +83,24 @@ class Game {
 		return (goodPath)
 	}
 
+	pmRange(sCase, pm) {
+		let pmRange = []
+		let path = []
+
+		for (let i in this.map.map) {
+			for (let j in this.map.map[i]) {
+				if (this.map.map[i][j].state != 'empty')
+					continue
+				path = this.pathfinding(sCase, this.map.map[i][j])
+				if (path.length <= pm) {
+					for (let p of path)
+						pmRange.push(p)
+				}
+			}
+		}
+		return (pmRange)
+	}
+
 	constructor() {
 
 	}
