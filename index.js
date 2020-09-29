@@ -28,8 +28,8 @@ game.map = board
 app.use(express.static('public'))
 io.on('connection', (socket) => {
 	console.log('a user connected')
-	initGame(socket)
 	newConnect()
+	initGame(socket)
 });
 
 function newConnect() {

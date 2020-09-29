@@ -23,6 +23,7 @@ class Main extends Phaser.Scene {
         this.load.image('tile', '/assets/iso_2.png');
         this.load.image('cra', '/assets/cra.png');
         this.load.image('bouftou', '/assets/bouftou.png');
+        this.load.image('terminerletour', '/assets/terminerletour.png');
     }
 
     create () {
@@ -121,6 +122,11 @@ class Main extends Phaser.Scene {
                 })
             }
         }
+        let terminerletour = this.add.image(800, 700, 'terminerletour')
+        this.imageGroup.add(terminerletour)
+        terminerletour.on('pointerclick', () => {
+            
+        })
         let centreX = 160;
         let centreY = -10;
         for (const i in lstPerso)
