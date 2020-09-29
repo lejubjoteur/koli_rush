@@ -1,8 +1,10 @@
 class Game {
 	nbPlayer = 0
 	map
-	characters = []
+	characters = {}
 	players = []
+	playOrder = 0
+	pmCount = 0
 
 	calculHcost(current, caseEnd) {
 		return (Math.sqrt((caseEnd.x - current.x) * (caseEnd.x - current.x) + (caseEnd.y - current.y) * (caseEnd.y - current.y)))
