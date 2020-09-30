@@ -7,37 +7,50 @@ class Game {
 	pmCount = 0
 
 	calculHcost(current, caseEnd) {
-		return (Math.sqrt((caseEnd.x - current.x) * (caseEnd.x - current.x) + (caseEnd.y - current.y) * (caseEnd.y - current.y)))
+		return (Math.abs(caseEnd.x - current.x) + Math.abs(caseEnd.y - current.y))
+		// return (Math.sqrt((caseEnd.x - current.x) * (caseEnd.x - current.x) + (caseEnd.y - current.y) * (caseEnd.y - current.y)))
 	}
-
+	
 	calculFcost(current, caseEnd, nbMaillon) {
 		return (this.calculHcost(current, caseEnd) + 10 * nbMaillon)
 	}
-
+	
 	findNeighbours(sCase) {
 		let x = sCase.x
 		let y = sCase.y
 		let voisin = []
-
+		
 		if (y - 1 >= 0)
-			voisin.push(this.map.map[y - 1][x])
+		voisin.push(this.map.map[y - 1][x])
 		if (y + 1 < this.map.height)
-			voisin.push(this.map.map[y + 1][x])
+		voisin.push(this.map.map[y + 1][x])
 		if (x - 1 >= 0)
-			voisin.push(this.map.map[y][x - 1])
+		voisin.push(this.map.map[y][x - 1])
 		if (x + 1 < this.map.width)
-			voisin.push(this.map.map[y][x + 1])
+		voisin.push(this.map.map[y][x + 1])
 		return (voisin)
 	}
-
+	
 	checkInTab(newCase, tab) {
 		for (let meta of tab)
 		{
 			if (newCase.id == meta.case.id)
-				return meta
+			return meta
 		}
 		return undefined
 	}
+
+	// checkChar(maillon, sCase) {
+	// 	for (let i in this.characters)
+	// 	{
+	// 		if (this.characters[i].posX != sCase.x || this.characters[i].posY != sCase.y)
+	// 		{
+	// 			if (maillon.x == this.characters[i].posX && maillon.y == this.characters[i].posY)
+	// 				return (true)
+	// 		}
+	// 	}
+	// 	return (false)
+	// }
 
 	pathfinding(sCase, eCase) {
 		let Open = []

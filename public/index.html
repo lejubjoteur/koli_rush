@@ -2,175 +2,175 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>KOLI_RUSH</title>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.24.0/dist/phaser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA==" crossorigin="anonymous"></script>
-    <style type="text/css">
-    body {
-        margin: 0;
-    }
-    </style>
+	<meta charset="UTF-8" />
+	<title>KOLI_RUSH</title>
+	<script src="//cdn.jsdelivr.net/npm/phaser@3.24.0/dist/phaser.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA==" crossorigin="anonymous"></script>
+	<style type="text/css">
+	body {
+		margin: 0;
+	}
+	</style>
 </head>
 <body>
-    <script type="text/javascript">
+	<script type="text/javascript">
 
 class Main extends Phaser.Scene {
-    socket
+	socket
 
-    preload () {
-        this.imageGroup = this.add.group();
-        this.load.image('tile', '/assets/iso_2.png');
-        this.load.image('cra', '/assets/cra.png');
-        this.load.image('bouftou', '/assets/bouftou.png');
-        this.load.image('terminerletour', '/assets/terminerletour.png');
-    }
+	preload () {
+		this.imageGroup = this.add.group();
+		this.load.image('tile', '/assets/iso_2.png');
+		this.load.image('cra', '/assets/cra.png');
+		this.load.image('bouftou', '/assets/bouftou.png');
+		this.load.image('terminerletour', '/assets/terminerletour.png');
+	}
 
-    create () {
-        this.socket = io();
-        
-        this.socket.on('stateChanged', (state) => {
-            this.build(state);
-        })
+	create () {
+		this.socket = io();
+		
+		this.socket.on('stateChanged', (state) => {
+			this.build(state);
+		})
 
-        this.socket.on('drawPath', (goodPath) => {
-            this.originalColor()
-            this.drawPath(goodPath)
-        })
+		this.socket.on('drawPath', (goodPath) => {
+			this.originalColor()
+			this.drawPath(goodPath)
+		})
 
-        this.socket.on('drawPmRange', (pmRange) => {
-            this.originalColor()
-            this.drawPmRange(pmRange)
-        })
-    }
+		this.socket.on('drawPmRange', (pmRange) => {
+			this.originalColor()
+			this.drawPmRange(pmRange)
+		})
+	}
 
-    originalColor () {
-        for (let row of this.tiles)
-            for(let tile of row)
-                if (tile != undefined)
-                    tile.tint = tile.originalColor
-    }
+	originalColor () {
+		for (let row of this.tiles)
+			for(let tile of row)
+				if (tile != undefined)
+					tile.tint = tile.originalColor
+	}
 
-    drawPath (goodPath) {
-        for (let cube of goodPath)
-            this.tiles[cube.y][cube.x].tint = 0x359E28;
-    }
+	drawPath (goodPath) {
+		for (let cube of goodPath)
+			this.tiles[cube.y][cube.x].tint = 0x359E28;
+	}
 
-    drawPmRange (pmRange) {
-        for (let cube of pmRange)
-            this.tiles[cube.y][cube.x].tint = 0x9EFC89;
-    }
+	drawPmRange (pmRange) {
+		for (let cube of pmRange)
+			this.tiles[cube.y][cube.x].tint = 0x9EFC89;
+	}
 
-    move (x, y) {
-        this.socket.emit('move', x, y)
-    }
+	move (x, y) {
+		this.socket.emit('move', x, y)
+	}
 
-    endTurn () {
-        this.originalColor()
-        this.socket.emit('endTurn')
-    }
-    
-    build (state) {
-        this.imageGroup.clear(true)
-        let map = state.map.map
-        var lstPerso = state.characters
-        let playOrder = state.playOrder
-        this.tiles = []
+	endTurn () {
+		this.originalColor()
+		this.socket.emit('endTurn')
+	}
+		
+	build (state) {
+		this.imageGroup.clear(true)
+		let map = state.map.map
+		var lstPerso = state.characters
+		let playOrder = state.playOrder
+		this.tiles = []
 
-        //taille des blocs
-        let tilewidth = 94;
-        let tileheight = 100;
-        let tileWidthHalf = tilewidth / 2;
-        let tileHeightQuarter = tileheight / 4;
-        //position dans la fenetre
-        let windowX = -120;
-        let windowY = 50;
-        // this.add.sprite(0, 0, 'background')
-        for (const y in map)
-        {
-            this.tiles[y] = []
-            for (const x in map[y])
-            {
-                let bob = map[y][x]
-                let tx = (state.map.width * tileWidthHalf) + (x - y) * tileWidthHalf
-                let ty = y * tileHeightQuarter + x * tileHeightQuarter
-                if (bob.state == 'void')
-                    continue;
-                let tile = this.add.image(tx + windowX, ty + windowY, 'tile')
-                this.imageGroup.add(tile)
-                this.tiles[y][x] = tile
-                // var text1 = this.add.text(-140 + tx, 15 + ty, `${x},${y}`);
-                switch (bob.state)
-                {
-                    case 'empty':
-                        if (y % 2 == 0)
-                        tile.originalColor = tile.tint = 0xE5E3E3;
-                        else
-                        tile.originalColor = tile.tint
-                        break;
-                        case 'hole':
-                        tile.originalColor = tile.tint = 0x000000;
-                            break;
-                            case 'void':
-                                break;
-                }
-                tile.setInteractive()
-                tile.on('pointerover', () => {
-                    if (bob.state != 'hole')
-                        this.socket.emit('findPath', x, y)
-                })
-                tile.on('pointerout', () => {
-                    tile.tint =  tile.originalColor;
-                })
-                tile.on('pointerdown', () => {
-                    if (bob.state != 'hole')
-                        this.move(x, y)
-                })
-            }
-        }
-        let terminerletour = this.add.image(800, 700, 'terminerletour').setInteractive()
-        this.imageGroup.add(terminerletour)
-        terminerletour.on('pointerdown', () => {
-            console.log('terminer le tour.')
-            this.endTurn()
-        })
-        let centreX = 160;
-        let centreY = -10;
-        for (const i in lstPerso)
-        {
-            console.log(lstPerso[i].name)
-            let x = lstPerso[i].posX
-            let y = lstPerso[i].posY
-            let perso
-            switch (lstPerso[i].name)
-            {
-                case 'Cra':
-                    perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 - 10, 'cra').setScale(0.35);
-                    break
-                case 'Bouftou':
-                    perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 + 5, 'bouftou').setScale(0.35);
-                    break
-            }
-            this.imageGroup.add(perso)
-        }
-    }
-    
-    update ()
-    {
+		//taille des blocs
+		let tilewidth = 94;
+		let tileheight = 100;
+		let tileWidthHalf = tilewidth / 2;
+		let tileHeightQuarter = tileheight / 4;
+		//position dans la fenetre
+		let windowX = -120;
+		let windowY = 50;
+		// this.add.sprite(0, 0, 'background')
+		for (const y in map)
+		{
+			this.tiles[y] = []
+			for (const x in map[y])
+			{
+				let bob = map[y][x]
+				let tx = (state.map.width * tileWidthHalf) + (x - y) * tileWidthHalf
+				let ty = y * tileHeightQuarter + x * tileHeightQuarter
+				if (bob.state == 'void')
+					continue;
+				let tile = this.add.image(tx + windowX, ty + windowY, 'tile')
+				this.imageGroup.add(tile)
+				this.tiles[y][x] = tile
+				// var text1 = this.add.text(-140 + tx, 15 + ty, `${x},${y}`);
+				switch (bob.state)
+				{
+					case 'empty':
+						if ((x - y) % 2 == 0)
+							tile.originalColor = tile.tint = 0xE5E3E3;
+						else
+							tile.originalColor = tile.tint
+						break;
+					case 'hole':
+						tile.originalColor = tile.tint = 0x000000;
+						break;
+					case 'void':
+						break;
+				}
+				tile.setInteractive()
+				tile.on('pointerover', () => {
+					if (bob.state != 'hole')
+						this.socket.emit('findPath', x, y)
+				})
+				tile.on('pointerout', () => {
+					tile.tint =  tile.originalColor;
+				})
+				tile.on('pointerdown', () => {
+					if (bob.state != 'hole')
+						this.move(x, y)
+				})
+			}
+		}
+		let terminerletour = this.add.image(800, 700, 'terminerletour').setInteractive()
+		this.imageGroup.add(terminerletour)
+		terminerletour.on('pointerdown', () => {
+			console.log('terminer le tour.')
+			this.endTurn()
+		})
+		let centreX = 160;
+		let centreY = -10;
+		for (const i in lstPerso)
+		{
+			console.log(lstPerso[i].name)
+			let x = lstPerso[i].posX
+			let y = lstPerso[i].posY
+			let perso
+			switch (lstPerso[i].name)
+			{
+				case 'Cra':
+					perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 - 10, 'cra').setScale(0.35);
+					break
+				case 'Bouftou':
+					perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 + 5, 'bouftou').setScale(0.35);
+					break
+			}
+			this.imageGroup.add(perso)
+		}
+	}
+		
+	update ()
+	{
 
-    }
-    
-    constructor() {
-        super('Main')
-    }
+	}
+		
+	constructor() {
+		super('Main')
+	}
 }
 
 let config = {
-    type: Phaser.AUTO,
-    width: 1080,
-    height: 800,
-    scene: Main,
-    backgroundColor: '#0x000000'
+	type: Phaser.AUTO,
+	width: 1080,
+	height: 800,
+	scene: Main,
+	backgroundColor: '#0x000000'
 };
 
 let game = new Phaser.Game(config);

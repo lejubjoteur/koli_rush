@@ -54,13 +54,15 @@ function initGame (socket) {
 		if (Object.keys(game.characters)[game.playOrder] != socket.id){
 			return
 		}
+		game.map.map[game.characters[socket.id].posY][game.characters[socket.id].posX].state = 'empty'
 		let goodPath = game.pathfinding(game.map.map[game.characters[socket.id].posY][game.characters[socket.id].posX], game.map.map[y][x])
-		if (goodPath.length <= game.characters[socket.id].pm && game.characters[socket.id].pm > game.pmCount) {
+		if (goodPath.length <= game.characters[socket.id].pm - game.pmCount) {
 			let inter = setInterval(() => {
 				let chemin = goodPath.pop()
 				if (chemin == undefined)
 				{
 					clearInterval(inter)
+					game.map.map[game.characters[socket.id].posY][game.characters[socket.id].posX].state = 'bloc'
 					return
 				}
 				game.characters[socket.id].move(chemin.x, chemin.y)

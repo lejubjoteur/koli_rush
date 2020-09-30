@@ -34,6 +34,8 @@ class Map {
 					this.map[i][j] = new Case(k, "void", i, j)
 				else if (map[i][j] == 0)
 					this.map[i][j] = new Case(k, "hole", j, i)
+				else if (map[i][j] == 2)
+					this.map[i][j] = new Case(k, "bloc", i, j)
 				else
 					this.map[i][j] = new Case(k, "empty", j, i)
 				k++
