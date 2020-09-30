@@ -51,9 +51,7 @@ function newConnect(tabChar, socketId) {
 function initGame (socket) {
 	socket.emit('stateChanged', game)
 	socket.on('move', (x, y) => {
-		console.log('movestart')
 		if (Object.keys(game.characters)[game.playOrder] != socket.id){
-			console.log(socket.id, game.characters)
 			return
 		}
 		let goodPath = game.pathfinding(game.map.map[game.characters[socket.id].posY][game.characters[socket.id].posX], game.map.map[y][x])
@@ -67,31 +65,24 @@ function initGame (socket) {
 				}
 				game.characters[socket.id].move(chemin.x, chemin.y)
 				game.pmCount += 1
-				console.log(game.characters[socket.id].pm, socket.id, game.playOrder)
 				io.emit('stateChanged', game)
 			}, 80)
 		}
-		console.log('moveEnd')
 	})
 	socket.on('findPath', (x, y) => {
-		console.log('findPathStart')
-		console.log(socket.id, game.characters, game.characters[socket.id])
-		if (Object.keys(game.characters)[game.playOrder] != socket.id){
-			console.log(socket.id, game.characters)
+		if (Object.keys(game.characters)[game.playOrder] != socket.id)
 			return
-		}
 		let pmRange = game.pmRange(game.map.map[game.characters[socket.id].posY][game.characters[socket.id].posX], game.characters[socket.id].pm - game.pmCount)
 		let goodPath = game.pathfinding(game.map.map[game.characters[socket.id].posY][game.characters[socket.id].posX], game.map.map[y][x])
 		if (goodPath.length <= game.characters[socket.id].pm - game.pmCount)
 			socket.emit('drawPath', goodPath)
 		else
 			socket.emit('drawPmRange', pmRange)
-		console.log('findPathEnd')
 	})
 	socket.on('endTurn', () => {
 		game.playOrder += 1
 		game.pmCount = 0
-		if (game.playOrder >= Object.keys(game.characters).length - 1)
+		if (game.playOrder >= Object.keys(game.characters).length)
 			game.playOrder = 0
 	})
 }
