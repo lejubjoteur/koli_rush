@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const server = app.listen(3000)
+const server = app.listen(3000 | process.env.PORT)
 const io = require('socket.io')(server)
 const { Game } = require('./game')
 const { Character } = require('./character')
