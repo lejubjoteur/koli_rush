@@ -60,16 +60,15 @@ class Game {
 		
 		Open.push(ptr)
 		let i = 0
-		while(ptr.case.id != eCase.id)
+		while(ptr.case.id != eCase.id && i < this.map.tmap)
 		{
-			i++
 			Open.sort((a, b) => a.Fcost - b.Fcost)
 			Object.assign(ptr, Open[0])
 			Close.push(Open.shift())
 			for (let maillon of this.findNeighbours(ptr.case))
 			{
-				if (maillon.state != 'empty' || this.checkInTab(maillon, Close))
-					continue
+				if (maillon.state != 'empty' || maillon.char != false || this.checkInTab(maillon, Close))
+				continue
 				if (this.checkInTab(maillon, Open))
 				{
 					let meta = this.checkInTab(maillon, Open)
@@ -78,17 +77,18 @@ class Game {
 						for (let index in Open)
 						{
 							if (maillon.id == Open[index].case.id)
-								Open.splice(index, 1)
+							Open.splice(index, 1)
 						}
 					}
 					else
-						continue
+					continue
 				}
 				//ajout de chaques nouveaux  voisins valides a mon tableau Open
 				let newObj = {}
 				Object.assign(newObj, ptr)
 				Open.push({case : maillon, parent : newObj, Fcost : this.calculFcost(maillon, eCase, newObj.nbMaillon + 1), nbMaillon : newObj.nbMaillon + 1})
 			}
+			i++
 		}
 		while (ptr.parent != 0)
 		{
@@ -97,11 +97,11 @@ class Game {
 		}
 		return (goodPath)
 	}
-
+	
 	pmRange(sCase, pm) {
 		let pmRange = []
 		let path = []
-
+		
 		for (let i in this.map.map) {
 			for (let j in this.map.map[i]) {
 				if (this.map.map[i][j].state != 'empty')

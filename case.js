@@ -3,7 +3,8 @@ class Case {
 	state;
 	x;
 	y;
-
+	char;
+	
 	constructor(id, state, x, y) {
 		this.id = id;
 		this.state = state;
@@ -16,6 +17,7 @@ class Map {
 	height;
 	width;
 	map = [];
+	tmap;
 
 	getJSON(){
 
@@ -36,8 +38,11 @@ class Map {
 					this.map[i][j] = new Case(k, "hole", j, i)
 				else if (map[i][j] == 2)
 					this.map[i][j] = new Case(k, "bloc", i, j)
-				else
+				else if (map[i][j] == 1)
 					this.map[i][j] = new Case(k, "empty", j, i)
+				if (!map[i][j].state != 'void')
+					this.tmap = k
+				this.map[i][j].char = false
 				k++
 			}
 		}

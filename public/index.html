@@ -23,6 +23,7 @@ class Main extends Phaser.Scene {
 		this.load.image('tile', '/assets/iso_2.png');
 		this.load.image('cra', '/assets/cra.png');
 		this.load.image('bouftou', '/assets/bouftou.png');
+		this.load.image('bob', '/assets/cube.png');
 		this.load.image('terminerletour', '/assets/terminerletour.png');
 	}
 
@@ -111,6 +112,9 @@ class Main extends Phaser.Scene {
 					case 'hole':
 						tile.originalColor = tile.tint = 0x000000;
 						break;
+					case 'bloc':
+						tile.originalColor = tile.tint = 0xFF0000;
+						break;
 					case 'void':
 						break;
 				}
@@ -149,6 +153,9 @@ class Main extends Phaser.Scene {
 					break
 				case 'Bouftou':
 					perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 + 5, 'bouftou').setScale(0.35);
+					break
+				case 'Bob':
+					perso = this.add.image(this.tiles[y][x].x, this.tiles[y][x].y - tileheight / 2 + 5, 'bob').setScale(0.35);
 					break
 			}
 			this.imageGroup.add(perso)
