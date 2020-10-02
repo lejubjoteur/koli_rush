@@ -40,18 +40,6 @@ class Game {
 		return undefined
 	}
 
-	// checkChar(maillon, sCase) {
-	// 	for (let i in this.characters)
-	// 	{
-	// 		if (this.characters[i].posX != sCase.x || this.characters[i].posY != sCase.y)
-	// 		{
-	// 			if (maillon.x == this.characters[i].posX && maillon.y == this.characters[i].posY)
-	// 				return (true)
-	// 		}
-	// 	}
-	// 	return (false)
-	// }
-
 	pathfinding(sCase, eCase) {
 		let Open = []
 		let Close = []

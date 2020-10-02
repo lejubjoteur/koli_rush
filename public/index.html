@@ -23,8 +23,8 @@ class Main extends Phaser.Scene {
 		this.load.image('tile', '/assets/iso_2.png');
 		this.load.image('cra', '/assets/cra.png');
 		this.load.image('bouftou', '/assets/bouftou.png');
-		this.load.image('bob', '/assets/cube.png');
 		this.load.image('terminerletour', '/assets/terminerletour.png');
+		this.load.image('flechemagique', '/assets/flechemagique.png');
 	}
 
 	create () {
@@ -136,6 +136,12 @@ class Main extends Phaser.Scene {
 		this.imageGroup.add(terminerletour)
 		terminerletour.on('pointerdown', () => {
 			console.log('terminer le tour.')
+			this.endTurn()
+		})
+		let flechemagique = this.add.image(300, 700, 'flechemagique').setInteractive()
+		this.imageGroup.add(flechemagique)
+		flechemagique.on('pointerdown', () => {
+			console.log('flechemagique.')
 			this.endTurn()
 		})
 		let centreX = 160;
